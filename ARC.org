@@ -1,0 +1,24 @@
+*  ARC
+** Input / Output
+
+   Categorize in: 
+
+   1. output.shape = input.shape
+   2. output.shape = c
+   3. output.shape = input.shape + c
+   4. output.shape = scaler * input.shape
+   5. output.shape = scaler * input.shape + c
+   6. other = higher degree polynomials i.e.
+
+** Abstraction
+
+   For each possible input to output shape relation chose model:
+
+   1. Cellular Automata
+
+
+** Implementation
+
+*** Cellular Automata
+    translate [[https://www.kaggle.com/teddykoker/training-cellular-automata-part-ii-learning-tasks][this implementation]] to tensorflow 
+    
