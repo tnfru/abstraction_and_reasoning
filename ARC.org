@@ -22,3 +22,7 @@
 *** Cellular Automata
     translate [[https://www.kaggle.com/teddykoker/training-cellular-automata-part-ii-learning-tasks][this implementation]] to tensorflow 
     
+**** implement the RNN like architecture
+     Subclassing in Keras?
+     train_on_batch
+     [[https://medium.com/analytics-vidhya/tf-gradienttape-explained-for-keras-users-cc3f06276f22][Gradient tape]] 
