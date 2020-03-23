@@ -1,4 +1,4 @@
-== Abstraction and Reasoning Challenge
+# Abstraction and Reasoning Challenge
 
 This is an attempt at ARC by Francois Chollet. 
 
