@@ -5,7 +5,6 @@ from matplotlib import pyplot as plt
 from matplotlib import colors
 from tensorflow import expand_dims
 
-
 # Read in data
 
 def read_tasks(path):
