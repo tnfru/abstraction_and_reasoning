@@ -1,8 +1,8 @@
 import os, json
-from pathlib import Path
-import matplotlib.pyplot as plt
-from matplotlib import colors
 import numpy as np
+from pathlib import Path
+from matplotlib import pyplot as plt
+from matplotlib import colors
 from tensorflow import expand_dims
 
 
