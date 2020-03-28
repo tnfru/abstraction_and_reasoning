@@ -1,6 +1,6 @@
 import tensorflow as tf
 from tensorflow.keras.layers import Input, Conv2D, Activation
-from tensorflow.keras.activation import softmax
+from tensorflow.keras.activations import softmax
 from data_utils import inp2img, plot_prediction
 import numpy as np
 from matplotlib import pyplot as plt
@@ -77,6 +77,6 @@ def train_and_plot(task, max_steps=10):
   predictions = predict(model, task['test'])
   plot_prediction(predictions, task['test'])
 
-def benchmark(task_ids = [1, 347, 26, 32], max_steps=2):
+def benchmark(task_set, task_ids = [1, 347, 26, 32], max_steps=2):
   for i in task_ids:
-    train_and_plot(train_tasks[i], max_steps=max_steps)
+    train_and_plot(task_set[i], max_steps=max_steps)
