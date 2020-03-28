@@ -10,7 +10,7 @@ def get_model():
   inputs = Input(shape=(None, None, 10))
   x = Conv2D(128, 3, padding='same')(inputs)
   x = Activation('relu')(x)
-  x = Dropout(0.2)(x)
+  x = Dropout(0.1)(x)
   x = Conv2D(10, 1)(x)
   outputs = softmax(x, axis=3)
 
