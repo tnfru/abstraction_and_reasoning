@@ -6,19 +6,18 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 
-def get_model():
+def get_default_model():
   inputs = Input(shape=(None, None, 10))
   x = Conv2D(128, 3, padding='same')(inputs)
   x = Activation('relu')(x)
-  x = Dropout(0.1)(x)
   x = Conv2D(10, 1)(x)
   outputs = softmax(x, axis=3)
 
   return tf.keras.Model(inputs=inputs, outputs=outputs)
 
-def solve_task(task, max_steps=10, epochs=100):
-  model = get_model()
+def solve_task(task, model_fn, max_steps=10, epochs=100):
   epochs = 100
+  model = model_fn()
   losses = []
   
   loss_fn = tf.keras.losses.SparseCategoricalCrossentropy()
@@ -70,14 +69,11 @@ def predict(model, task, num_steps=100):
     predictions.append(tf.argmax(pred, axis=3).numpy().squeeze())
   return predictions
 
-def train_and_plot(task, max_steps=10):
-  model, losses = solve_task(task['train'], max_steps=max_steps)
-  plt.plot(losses)
-  predictions = predict(model, task['train'])
-  plot_prediction(predictions, task['train'])
-  predictions = predict(model, task['test'])
-  plot_prediction(predictions, task['test'])
-
-def benchmark(task_set, task_ids = [1, 347, 26, 32], max_steps=2):
+def train_and_plot(task_set, task_ids, model_fn=get_default_model, max_steps=2):
   for i in task_ids:
-    train_and_plot(task_set[i], max_steps=max_steps)
+    model, losses = solve_task(task_set[i]['train'], model_fn, max_steps=max_steps)
+    plt.plot(losses)
+    predictions = predict(model, task_set[i]['train'])
+    plot_prediction(predictions, task_set[i]['train'])
+    predictions = predict(model, task_set[i]['test'])
+    plot_prediction(predictions, task_set[i]['test'])
