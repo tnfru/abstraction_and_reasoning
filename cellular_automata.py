@@ -47,7 +47,7 @@ def solve_task(model_fn, task_data, max_steps=10, epochs=100):
 
           y_pred = model(inp2img(y))
 
-          loss += 5 * loss_fn(y, y_pred)
+          loss += 3 * loss_fn(y, y_pred)
 
         grads = tape.gradient(loss, model.trainable_weights)
         optimizer.apply_gradients(zip(grads, model.trainable_weights))
