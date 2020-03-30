@@ -3,7 +3,7 @@ import numpy as np
 from pathlib import Path
 from matplotlib import pyplot as plt
 from matplotlib import colors
-from tensorflow import expand_dims
+import tensorflow as tf
 
 # Read in data
 
@@ -87,11 +87,31 @@ def count_equal_dims(tasks, isTrain=True):
 # from kaggle.com/teddykoker/training-cellular-automata-part-ii-learning-tasks
 
 def inp2img(inp):
-    inp = np.array(inp)
+    #inp = np.array(inp.to_list())
+    inp = inp.numpy()
     img = np.full((inp.shape[0], inp.shape[1], 10), 0, dtype=np.float32)
     for i in range(10):
         img[:,:,i] = (inp==i)
-    return expand_dims(img, 0)
+    return tf.expand_dims(img, 0)
 
 def calk_score(task_test, predict):
     return [int(np.equal(sample['output'], pred).all()) for sample, pred in zip(task_test, predict)]
+
+
+def conv_to_dataset(task):
+  pairs = []
+  for sample in task:
+      pairs.append(np.array(list(sample.values())))
+  ds = tf.data.Dataset.from_tensor_slices(tf.ragged.constant(pairs, dtype=tf.float32))
+  #ds = ds.map(to_eager)
+  return ds
+
+
+def to_eager(sample):
+  """
+  Not working - doesn't recoginize it's in eager execution
+  """
+  sample[0] = tf.convert_to_tensor(np.array(sample[0].to_list()), dtype=tf.float32)
+  sample[1] = tf.convert_to_tensor(np.array(sample[1].to_list()), dtype=tf.int8)
+
+  return sample

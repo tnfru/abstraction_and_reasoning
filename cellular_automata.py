@@ -1,6 +1,7 @@
 import tensorflow as tf
 from tensorflow.keras.layers import Input, Conv2D, Activation, Dropout
 from tensorflow.keras.activations import softmax
+import data_utils
 from data_utils import inp2img, plot_prediction
 import numpy as np
 from matplotlib import pyplot as plt
@@ -15,7 +16,7 @@ def get_default_model():
 
   return tf.keras.Model(inputs=inputs, outputs=outputs)
 
-def solve_task(task, model_fn, max_steps=10, epochs=100):
+def solve_task(model_fn, task_data, max_steps=10, epochs=100):
   epochs = 100
   model = model_fn()
   losses = []
@@ -28,12 +29,12 @@ def solve_task(task, model_fn, max_steps=10, epochs=100):
     for epoch in range(epochs):
       loss = 0.0
 
-      for sample in task:
+      for x, y in task_data:
+        x = inp2img(tf.convert_to_tensor(x.to_list(), dtype=tf.float32))
+        y = tf.convert_to_tensor(np.array(y.to_list()), dtype=tf.int8)
+
         with tf.GradientTape() as tape:
           # predict output from input
-
-          x = inp2img(sample['input'])
-          y = tf.convert_to_tensor(sample['output'], dtype=tf.int8)
 
           y_pred = model(softmax(x, axis=3))
           
@@ -44,7 +45,7 @@ def solve_task(task, model_fn, max_steps=10, epochs=100):
 
           # predict output from output to force stabilization
 
-          y_pred = model(inp2img(sample['output']))
+          y_pred = model(inp2img(y))
 
           loss += 5 * loss_fn(y, y_pred)
 
@@ -60,7 +61,7 @@ def predict(model, task, num_steps=100):
   predictions = []
 
   for sample in task:
-    x = inp2img(sample['input'])
+    x = inp2img(tf.convert_to_tensor(sample['input'], dtype=tf.float32))
     pred = model(softmax(x, axis=3))
         
     for _ in range(num_steps):
@@ -71,7 +72,9 @@ def predict(model, task, num_steps=100):
 
 def train_and_plot(task_set, task_ids, model_fn=get_default_model, max_steps=2):
   for i in task_ids:
-    model, losses = solve_task(task_set[i]['train'], model_fn, max_steps=max_steps)
+    train_data = data_utils.conv_to_dataset(task_set[i]['train'])
+    model, losses = solve_task(model_fn, train_data, max_steps=max_steps)
+
     plt.plot(losses)
     predictions = predict(model, task_set[i]['train'])
     plot_prediction(predictions, task_set[i]['train'])
